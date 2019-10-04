@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Divisiones</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+  </head>
+  <body class="is-preload">
+      <section id="intro" class="main style1 dark fullscreen">
+          <header>
+            <h2>Divisiones.</h2>
+          </header>
+        </div>
+      </section>
+      <section id="contact" class="main style3 secondary">
+        <div class="content">
+          <header>
+            <h2 name="dividir">Raliza tu division.</h2><br>
+            <img src="images/1.jpg" width="500"> 
+          </header>
+          <div class="box">
+              <div class="fields">
+                <div class="field half">
+<form id="formdivision">
+      <p><output id="respuesta"></output></p>
+      <p>
+        <label class="color" >Divisor:</label>
+        <input type="number" min="1" step="0.01" id="divisor" required placeholder="Ingresa el divisor"></p>
+
+      <p>
+         <label class="color" >Dividendo:</label>
+         <input type="number" step="0.01" id="dividendo" required placeholder="Ingresa el dividendo"></p>
+      <p>
+        <button type="submit">Dividir (Hilos)</button>
+        <button type="button" id="dividirHttp">Dividir (Http)</button>
+      </p>
+    </form>
+
+
+        <script type="module">
+      const hilo = new Worker("wwDivision.js");
+      formdivision.addEventListener("submit", divideHilo);
+      dividirHttp.addEventListener("click", divideHttp);
+      hilo.addEventListener("message", evt => muestraRespuesta(evt.data));
+      function muestraRespuesta(texto) {
+        respuesta.value = texto;
+      }
+      function divideHilo(evt) {
+        evt.preventDefault();
+        const modelo = leeModelo();
+        hilo.postMessage(modelo);
+      }
+      function leeModelo() {
+        return {
+          divisor: divisor.value.trim(),
+          dividendo: dividendo.value.trim()
+        };
+      }
+      function divideHttp() {
+        const modelo = leeModelo();
+        fetch("division?divisor=" + encodeURIComponent(modelo.divisor)
+          + "&dividendo=" + encodeURIComponent(modelo.dividendo))
+          .then(
+            respuestaHttp => {
+              if (respuestaHttp.ok) {
+                return respuestaHttp.text();
+              } else {
+                throw new Error(respuestaHttp.statusText)
+              }
+            })
+          .then(texto => muestraRespuesta(texto))
+          .catch(e => muestraRespuesta(e.message));
+      }
+    </script>
+              
+                </div>
+
+          </div>
+        </div>
+      </section>
+
+    <!-- Footer -->
+      <footer id="footer">
+        <!-- Menu -->
+          <ul class="menu">
+            <li><h2> Reyes Vicencio Joel &copy;  IC51M</h2></li>
+          </ul>
+
+      </footer>
+
+    <!-- Scripts -->
+      <script src="assets/js/jquery.min.js"></script>
+      <script src="assets/js/jquery.poptrox.min.js"></script>
+      <script src="assets/js/jquery.scrolly.min.js"></script>
+      <script src="assets/js/jquery.scrollex.min.js"></script>
+      <script src="assets/js/browser.min.js"></script>
+      <script src="assets/js/breakpoints.min.js"></script>
+      <script src="assets/js/util.js"></script>
+      <script src="assets/js/main.js"></script>
+
+      
+
+
+  </body>
+</html>
